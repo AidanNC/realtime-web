@@ -1,0 +1,6 @@
+{
+    "name": "socket-game-server",
+    "version": "0.0.1",
+    "description": "Attempt to make realtime game in browser.",
+    "dependencies": {}
+  }
