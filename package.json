@@ -1,4 +1,6 @@
 {
+  "name": "socket-game-server",
+  "description": "Attempt to make realtime game in browser.",
   "dependencies": {
     "express": "^4.18.2"
   }
