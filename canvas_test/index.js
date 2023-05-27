@@ -10,14 +10,17 @@ canvas.height = 576;
 
 c.fillRect(0, 0, canvas.width, canvas.height);
 
-let otherPlayer = { x: 0, y: 0, xvelocity: 0, yvelocity: 0, charcolor: "blue" };
+// let otherPlayer = { x: 0, y: 0, xvelocity: 0, yvelocity: 0, charcolor: "blue" };
 
-const width = 20;
+const otherPlayers = {};
+
+const width = 40;
 let x = 0;
 let y = 0;
 let xvelocity = 0;
 let yvelocity = 0;
 const color = "hsla(" + Math.random() * 360 + ", 100%, 50%, 1)";
+const id = Math.floor(Math.random() * 1000000);
 
 const keys = {
     a: {
@@ -38,6 +41,7 @@ let interval = 1000 / fps;
 let elapsed = 0;
 
 const update = () => {
+    setVelocity();
     x += xvelocity;
     y += yvelocity;
     if (y > canvas.height - width) {
@@ -56,6 +60,7 @@ const update = () => {
         xvelocity: xvelocity,
         yvelocity: yvelocity,
         charcolor: color,
+        id: id,
     });
 };
 const condUpdate = (currTime) => {
@@ -64,6 +69,8 @@ const condUpdate = (currTime) => {
     if (elapsed > interval) {
         update();
         before = now - (elapsed % interval); // come back to this and make sure we understand what it is doing completely
+        // before = now;
+        
     }
 };
 
@@ -94,8 +101,8 @@ const setVelocity = () => {
     }
 };
 
-const drawSquare = (x, y, xvelocity, yvelocity, width, col) => {
-    c.strokeStyle = col;
+const drawSquare = (x, y, xvelocity, yvelocity, width, color) => {
+    c.strokeStyle = color;
 
     c.strokeRect(x, y, width, width);
 
@@ -113,6 +120,21 @@ const drawSquare = (x, y, xvelocity, yvelocity, width, col) => {
             width / scale
         );
     }
+    
+};
+
+const drawOthers = () => {
+    for (const [key, value] of Object.entries(otherPlayers)) {
+        if(window.performance.now()- value.timeStamp < 1000)
+        drawSquare(
+            value.x,
+            value.y,
+            value.xvelocity,
+            value.yvelocity,
+            width,
+            value.charcolor
+        );
+    }
 };
 
 function animate() {
@@ -123,8 +145,8 @@ function animate() {
     // c.fillStyle = "red";
     // c.fillRect(x, y, width, width);
     drawSquare(x, y, xvelocity, yvelocity, width, color);
-    drawSquare(otherPlayer.x,otherPlayer.y,otherPlayer.xvelocity,otherPlayer.yvelocity,width,otherPlayer.charcolor);
-    setVelocity();
+    drawOthers();
+    // drawSquare(otherPlayer.x,otherPlayer.y,otherPlayer.xvelocity,otherPlayer.yvelocity,width,otherPlayer.charcolor);
 }
 
 animate();
@@ -157,7 +179,8 @@ window.addEventListener("keyup", (event) => {
     }
 });
 
-
 socket.on("player update", function (msg) {
-    otherPlayer = msg;
+    // otherPlayer = msg;
+    msg.timeStamp = window.performance.now();
+    otherPlayers[msg.id] = msg;
 });
