@@ -19,14 +19,6 @@ function createWorker(port) {
   });
 }
 
-// app.get("/test", async (req, res) => {
-//   const workerPromises = [];
-//   for (let i = 0; i < THREAD_COUNT; i++) {
-//     workerPromises.push(createWorker(3000+i));
-//   }
-//   const thread_results = await Promise.all(workerPromises);
-//   res.status(200).send("Nothing");
-// });
 
 const workerPromises = [];
 for (let i = 1; i < 2; i++) {
